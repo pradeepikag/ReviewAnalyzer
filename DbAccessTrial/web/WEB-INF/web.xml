@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app>
+   <servlet>
+   <servlet-name>Dbacc</servlet-name>
+   <servlet-class>Dbacc</servlet-class>
+</servlet>
+<welcome-file-list>
+    <welcome-file>dashboard.html</welcome-file>
+    <welcome-file>consumer.html</welcome-file>
+    <welcome-file>complaints.html</welcome-file>
+    <welcome-file>ulta.html</welcome-file>
+    <welcome-file>nykaa.html</welcome-file>
+    <welcome-file>soho.html</welcome-file>
+    <welcome-file>look.html</welcome-file>
+    <welcome-file>makeup.html</welcome-file>
+    <welcome-file>adore.html</welcome-file>
+</welcome-file-list>
+
+    
+<servlet-mapping>
+   <servlet-name>Dbacc</servlet-name>
+   <url-pattern>/Dbacc</url-pattern>
+</servlet-mapping>
+</web-app>

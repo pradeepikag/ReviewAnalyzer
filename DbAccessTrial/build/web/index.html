@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<html>
+    <head>
+        <title>TODO supply a title</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.4.5/d3.js"></script>
+
+    </head>
+    
+    <body>
+        <div id="demo">
+<h1>The XMLHttpRequest Object</h1>
+<button type="button" onclick="loadDoc()">Change Content</button>
+</div>
+        <div id="chart"></div>
+              <script>
+function loadDoc() {
+  var xhttp = new XMLHttpRequest();
+  xhttp.onreadystatechange = function() {
+    if (this.readyState == 4 && this.status == 200) {
+//      document.getElementById("demo").innerHTML =
+//      this.responseText;
+      var responseText = JSON.parse(this.responseText);
+      
+      var innerHtml = '';
+      for(key in responseText){
+          console.log('key',key);
+          innerHtml += '<div id="' + key + '"></div>';
+      }
+      document.getElementById("chart").innerHTML = innerHtml;
+      for(key in responseText){
+          console.log('key',key);
+          var positive=0, negative=0, neutral=0, obj = {};
+        for(var i=0; i<responseText[key].length; i++)
+        {
+          console.log(positive, negative, neutral);
+            if(responseText[key][i].compound>0.5)
+                positive++;
+            else if(responseText[key][i].compound<-0.5)
+                negative++;
+            else
+                neutral++;        
+        }
+        obj.positive = positive;
+        obj.negative = negative;
+        obj.neutral = neutral;
+        createChart(key, obj)
+    }
+      console.log(positive, negative, neutral);
+      
+    }
+  };
+  xhttp.open("POST", "http://localhost:8084/DbAccessTrial/Dbacc", true);
+  xhttp.send();
+}
+function createChart(site, obj) {
+    
+                        var w =500;
+        var h = 400;
+var r = h/2;
+var color = d3.scale.category20c();
+
+var data = [{"label":"positive", "value":obj.positive}, 
+		          {"label":"negative", "value":obj.negative}, 
+		          {"label":"neutral", "value":obj.neutral}];
+
+
+var vis = d3.select('#'+site).append("svg:svg").data([data]).attr("width", w).attr("height", h).append("svg:g").attr("transform", "translate(" + r + "," + r + ")");
+var pie = d3.layout.pie().value(function(d){return d.value;});
+
+// declare an arc generator function
+var arc = d3.svg.arc().outerRadius(r);
+var arcOver = d3.svg.arc()
+        .outerRadius(r + 9);
+
+// select paths, use arc generator to draw
+var arcs = vis.selectAll("g.slice").data(pie).enter().append("svg:g").attr("class", "slice");
+arcs.append("svg:path")
+    .attr("fill", function(d, i){
+        return color(i);
+    })
+    .attr("d", function (d) {
+        // log the result of the arc generator to show how cool it is :)
+        console.log(arc(d));
+        return arc(d);
+    })
+     .on("mouseenter", function(d) {
+            d3.select(this)
+               .attr("stroke","white")
+               .transition()
+               .duration(1000)
+               .attr("d", arcOver)             
+               .attr("stroke-width",6);
+        })
+        .on("mouseleave", function(d) {
+            d3.select(this).transition()            
+               .attr("d", arc)
+               .attr("stroke","none");
+        });
+}
+</script>
+  
+    </body>
+    
+</html>
